@@ -1,12 +1,11 @@
 from django.shortcuts import render,redirect
-from myapp.forms import RegistrationForm
+from myapp.forms import RegistrationForm,PasswordResetForm
 from django.contrib.auth.models import User
 # Create your views here.
 def home(request):
     return render(request,"myapp/home.html")
 
 def register(request):
-    
     if request.method=='POST':
         form=RegistrationForm(request.POST)
         if form.is_valid():
@@ -17,6 +16,7 @@ def register(request):
             return render(request,"myapp/register.html",{'form':form})
     form=RegistrationForm()
     return render(request,"myapp/register.html",{'form':form})
+
 from django.contrib.auth import login,authenticate,logout
 from django.contrib.auth.decorators import login_required
 def user_login(request):
@@ -36,3 +36,20 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return redirect('myapp:home')
+
+@login_required(login_url='/login/')
+def profile(request):
+    return render(request,"myapp/profile.html")
+
+@login_required(login_url='/login/')
+def reset_password(request):
+    form=PasswordResetForm()
+    if request.method=="POST":
+        form=PasswordResetForm(request.POST)
+        if form.is_valid():
+            password=form.cleaned_data.get('password')
+            request.user.set_password(password)
+            request.user.save()
+        else:
+            return render(request,'myapp/forgot_passsword.html',{'form':form})
+    return render(request,'myapp/forgot_password.html',{'form':form})
