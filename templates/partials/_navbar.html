@@ -15,9 +15,13 @@
     <li class="nav-item">
       <a class="nav-link" href="{% url 'myapp:user_logout' %}">Logout</a>
     </li>
+      <form method="GET">
+        <input type="text" name="username" id="username" placeholder="User Search">
+        <input type="submit" value="Search" class="btn btn-primary">
+      </form>
     {% else %}
     <li class="nav-item">
     <a class="nav-link" href="{% url 'myapp:login' %}">Login</a>
     </li>
     {% endif %}
-  </ul>
+  </ul> 
